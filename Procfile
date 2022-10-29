@@ -1,0 +1,1 @@
+web: streamlit serve public/main.py
