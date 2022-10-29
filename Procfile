@@ -1,1 +1,1 @@
-web: streamlit serve public/main.py
+web: pipenv run front
