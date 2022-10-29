@@ -7,6 +7,12 @@ name = "pypi"
 black = "*"
 streamlit = "*"
 watchdog = "*"
+numpy = "*"
+transformers = "*"
+matplotlib = "*"
+torch = "*"
+torchvision = "*"
+datasets = "*"
 
 [dev-packages]
 
