@@ -3,6 +3,7 @@ from torch.optim import lr_scheduler
 import torch
 import torchvision
 import numpy as np
+from transformers import AutoModel, Trainer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #Load VIT (Maybe a big vit model)
@@ -12,7 +13,7 @@ for param in model_transf.parameters():
     param.requires_grad = False
 
 #Number of classes: 2, positive or negative. Access to the last layer and change output size
-model_transf.heads = nn.Linear(1000, 1)
+model_transf.heads = nn.Linear(768, 1)
 
 #loss function
 criterion = nn.CrossEntropyLoss()
@@ -23,7 +24,9 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.1)
 def pred(imagen):
     input=np.array([imagen])
     input.resize((1,3,224,224))
-    print(input.shape)
+    input = torch.from_numpy(input)
+    input = input.type(torch.float32)
     output=model_transf(input)
+    print("out",output)
     _,pred=torch.max(output, 1)
-    print(pred)
+    return pred

@@ -4,7 +4,7 @@ import time
 from PIL import Image
 import numpy as np
 from model import BrainTumorDetector
-
+from googleViT import query
 model = BrainTumorDetector()
 
 if __name__ == "__main__":
@@ -14,9 +14,12 @@ if __name__ == "__main__":
         with st.spinner("processing"):
             time.sleep(0.1)
         image_np = np.array(Image.open(image))
-        model.evaluate(image_np)
+        
+        # response = query(Image.open(image).tobytes())
+
+        response = model.evaluate(image_np)
         st.info(
-            f"The patient has a {model.get_probability()} % probability of having cancer"
+            f"{response}"
         )
 
         st.button("Explain result")
