@@ -1,10 +1,14 @@
 import streamlit as st
 import time
+from BrainTumorDetector import BrainTumorDetector
+
+def start_detection(images):
+    model = BrainTumorDetector()
+    response = model.evaluate(images)
 
 if __name__ == '__main__':
     st.title("Brain Tumor Detection")
-    image = st.file_uploader("Upload your photos", accept_multiple_files= False)
-    if image != None:
-        with st.spinner("processing"):
-            time.sleep(3)
-        st.image(image)
+    images = st.file_uploader("Upload your photos", accept_multiple_files= True)
+
+    if images != None:
+        start_detection(images)
