@@ -1,17 +1,13 @@
 from torchvision.models import vit_b_16, ViT_B_16_Weights
 import torchvision.transforms as transforms
 from PIL import Image
-from torch import unsqueeze, max, from_numpy
+from torch import unsqueeze, max, from_numpy, load, round, sigmoid
 from torch.nn import Linear
 from numpy import array
 
 class BrainTumorDetector:
     def __init__(self) -> None:
-        self.__init_model()
-
-    def __init_model(self):
-        self.model = vit_b_16(weights=ViT_B_16_Weights.DEFAULT)
-        self.model.heads = Linear( self.model.heads.head.in_features, 1)
+        self.model = load("model_1.pt")
 
     def __preprare_img(self, image):
         input = Image.open(image).convert("RGB")
@@ -22,19 +18,19 @@ class BrainTumorDetector:
 
     def evaluate(self, images):
         preds = from_numpy(array([[0.0]]))
+        num_preds = len(images)
+
         for image in images:
             tensor = self.__preprare_img(image)
 
             output = self.model(tensor)
+            print("out", output)
+            pred = round(sigmoid(output))
+            print("pred", pred)
 
-            print("pred", output)
-            # _,pred= max(output, 1)
+            preds += pred
 
-            preds += output
-
-        _, global_prediction = max(preds, 1)
+        global_prediction = preds / num_preds
         print(global_prediction)
-        if global_prediction == 0: return "The pacient does not have cancer"
-        elif global_prediction == 1: return "The pacient has cancer"
-        return preds
-
+        if global_prediction >= 0.5: return "The pacient does not have cancer"
+        else: return "The pacient has cancer"
